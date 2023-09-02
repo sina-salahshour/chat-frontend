@@ -1,0 +1,5 @@
+"Definition for rule 'jsdoc/newline-after-description' was not found" // the rule is removed from the eslint plugin so i removed it from eslintrc
+
+//added plugin "eslint-plugin-tailwindcss" for tailwind based linting
+
+//added rule  `"@typescript-eslint/consistent-type-imports": "error"`, for consistent type imports
