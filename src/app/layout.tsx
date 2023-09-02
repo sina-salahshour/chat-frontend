@@ -1,4 +1,5 @@
 import "configs/globals.css";
+import { cn } from "utils/cn";
 import { Montserrat } from "next/font/google";
 import { Providers } from "store/providers";
 import React from "react";
@@ -17,7 +18,7 @@ const RootLayout = ({
     children: React.ReactNode;
 }) => (
     <html lang="en">
-        <body className={montserrat.className}>
+        <body className={cn(montserrat.className, "bg-background")}>
             <Providers>{children}</Providers>
         </body>
     </html>
