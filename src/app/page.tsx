@@ -3,6 +3,7 @@
 import { AuthenticationService } from "services/authentication.service";
 import { Button } from "components/button";
 import { Card } from "components/card";
+import { identity } from "utils/identiry";
 import { ls } from "services/localstorage.service";
 import { motion } from "framer-motion";
 import { setUser } from "store/redux/reduders/user-reducer";
@@ -71,7 +72,7 @@ export const Home = () => {
                 loading: "Signing In...",
                 error: "Sign In Failed. Please try again later.",
                 success: "Sign In Successfull!",
-            });
+            }).catch(identity); // already handled in toast.promise
         } finally {
             setFormState("idle");
         }
