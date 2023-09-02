@@ -1,5 +1,14 @@
-"Definition for rule 'jsdoc/newline-after-description' was not found" // the rule is removed from the eslint plugin so i removed it from eslintrc
+## "Definition for rule 'jsdoc/newline-after-description' was not found"
+-  the rule is removed from the eslint plugin so i removed it from eslintrc
 
-//added plugin "eslint-plugin-tailwindcss" for tailwind based linting
+## added plugin "eslint-plugin-tailwindcss" for tailwind based linting
 
-//added rule  `"@typescript-eslint/consistent-type-imports": "error"`, for consistent type imports
+## added rule  `"@typescript-eslint/consistent-type-imports": "error"`, for consistent type imports
+
+## currently store does not have any reducer so console shows an error about it
+
+##  currently nextjs app route has a bug that causes framer motion <AnimatePresence/> to stop working in the layour level, so i used a hack to play the exit animation myself and thend change the route  
+
+related github issues: 
+- https://github.com/vercel/next.js/issues/49279
+- https://github.com/vercel/next.js/issues/49596
