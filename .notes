@@ -12,3 +12,10 @@
 related github issues: 
 - https://github.com/vercel/next.js/issues/49279
 - https://github.com/vercel/next.js/issues/49596
+
+## merge docker stages
+
+- build for the first time gave `failed to export image: failed to create image: failed to get layer sha256:<hash>: layer does not exist` error and worked for the second time (in each copy operation).  
+
+related github issues:
+ - https://github.com/moby/moby/issues/37965
