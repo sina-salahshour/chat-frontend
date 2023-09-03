@@ -1,6 +1,7 @@
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
+import { Button } from "components/button";
 import Image from "next/image";
-import React from "react";
+import React, { useReducer } from "react";
 import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
@@ -9,27 +10,52 @@ export const messageVariants = {
     initial: { height: 0, x: -10, opacity: 0 },
     exit: { height: 0, opacity: 0 },
 } satisfies Variants;
+export const messageMenuVariants = {
+    show: { height: "auto", opacity: 1 },
+    initial: { height: 0, opacity: 0 },
+    exit: { height: 0, opacity: 0 },
+} satisfies Variants;
 
 export interface MessageProps {
     profile?: string;
     name: string;
     tag?: "mod" | "user";
     message: string;
-    replyTo?: UserDto | null;
+    replyTo?: UserDto ;
     id: number;
-    onClickReply: (user: UserDto) => void;
+    onClickReply: (user?: UserDto) => void;
 }
 
-export const Message = ({ message, name, profile, replyTo, tag }: MessageProps) =>
-    <motion.div variants={messageVariants} initial="initial" animate="show" exit="exit" className="group flex flex-col text-xs font-semibold text-white" data-has-tag={!!tag} data-tag={tag}>
-        <h3 className="flex items-center gap-2">
+export const Message = ({ message, name, profile, replyTo, tag, onClickReply }: MessageProps) => {
+    const [ isMessageMenuVisible, toggleMessageMenuVisibility ] = useReducer((prev) => !prev, false);
+
+    return <motion.div variants={messageVariants} initial="initial" animate="show" exit="exit" className="group flex flex-col text-xs font-semibold text-white" data-has-tag={!!tag} data-tag={tag}>
+        <button className="flex items-center gap-2" onClick={toggleMessageMenuVisibility}>
             {profile && <figure className="relative h-6 w-6 overflow-hidden rounded">
                 <Image fill src={profile} alt={name} />
             </figure>}
             {tag && <span className="rounded bg-accent-default p-1 uppercase text-background ">{tag}</span>}
             <span className="group-data-[has-tag=true]:text-accent-default">{name}</span>
-        </h3>
+        </button>
         <p className="mt-1 text-secondary group-data-[tag=mod]:text-result-fail group-data-[tag=user]:text-white">
             {replyTo && <span className="text-white text-opacity-80 group-data-[has-tag=true]:text-opacity-100">@{replyTo.user_name}</span>} {message}
         </p>
+        <AnimatePresence>
+            {
+                isMessageMenuVisible && <MessageMenu onClickReply={onClickReply} replyTo={replyTo}/>
+            }
+        </AnimatePresence>
+    </motion.div>;
+};
+
+type MessageMenuProps = Pick<MessageProps, "onClickReply"|"replyTo">;
+
+export const MessageMenu = ({ onClickReply, replyTo }: MessageMenuProps) =>
+    <motion.div
+        className="flex gap-2 "
+        variants={messageMenuVariants}
+        initial="initial" animate="show" exit="exit"
+    >
+        {replyTo && <Button variant="secondary" size="compact" className="mt-2 px-4" onClick={() => onClickReply(replyTo)}>Reply</Button>}
+        <Button variant="secondary" size="compact" className="mt-2 px-4">Mute</Button>
     </motion.div>;

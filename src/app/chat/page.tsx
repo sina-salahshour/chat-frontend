@@ -58,6 +58,7 @@ const ChatPage = () => {
             router.push("/");
         };
     };
+
     return <motion.main
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
@@ -116,6 +117,11 @@ export const ChatSection = () => {
         value += messageBox;
         return value;
     }, [ messageBox, replyUser ]);
+
+    const handleReply = (user?: UserDto) => {
+        setReplyUser(user);
+        textFieldRef.current?.focus();
+    };
     return <>
         <motion.div variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
@@ -130,9 +136,9 @@ export const ChatSection = () => {
                             message={message.message}
                             name={message.user?.user_name || "Admin"}
                             profile={message.user?.user_avatar}
-                            replyTo={message.reply_to?.user}
+                            replyTo={message.reply_to?.user || undefined}
                             tag={message.user === null ? "mod" : "user"}
-                            onClickReply={setReplyUser}
+                            onClickReply={handleReply}
                         />)
                     }
                 </AnimatePresence>
