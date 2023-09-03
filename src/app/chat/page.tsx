@@ -75,7 +75,7 @@ const ChatPage = () => {
                 </AnimatePresence>
             </div>
             <Menu show={isMenuVisible} onHideChat={hideChat} />
-            <AnimatePresence mode="sync" >
+            <AnimatePresence mode="wait" >
                 {
                     isChatVisible ?
                         <ChatSection key="chat" /> :
@@ -97,18 +97,20 @@ export const ChatSection = () => {
         <motion.div variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
         >
-            <div className="flex flex-1 flex-col gap-4">
+            <div className="flex flex-1 flex-col gap-4 overflow-x-hidden">
+                <AnimatePresence>
 
-                {
-                    messages.map((message) => <Message
-                        key={message.id}
-                        message={message.message}
-                        name={message.user?.user_name || "Admin"}
-                        profile={message.user?.user_avatar}
-                        replyTo={message.reply_to?.user?.user_name}
-                        tag={message.user === null ? "mod" : "user"}
-                    />)
-                }
+                    {
+                        messages.map((message) => <Message
+                            key={message.id}
+                            message={message.message}
+                            name={message.user?.user_name || "Admin"}
+                            profile={message.user?.user_avatar}
+                            replyTo={message.reply_to?.user?.user_name}
+                            tag={message.user === null ? "mod" : "user"}
+                        />)
+                    }
+                </AnimatePresence>
             </div>
         </motion.div>
         <motion.form
