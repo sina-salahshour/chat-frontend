@@ -21,12 +21,12 @@ export interface MessageProps {
     name: string;
     tag?: "mod" | "user";
     message: string;
-    replyTo?: UserDto ;
-    id: number;
+    replyTo?: UserDto | null;
+    user?: UserDto;
     onClickReply: (user?: UserDto) => void;
 }
 
-export const Message = ({ message, name, profile, replyTo, tag, onClickReply }: MessageProps) => {
+export const Message = ({ message, name, profile, replyTo, tag, onClickReply, user }: MessageProps) => {
     const [ isMessageMenuVisible, toggleMessageMenuVisibility ] = useReducer((prev) => !prev, false);
 
     return <motion.div variants={messageVariants} initial="initial" animate="show" exit="exit" className="group flex flex-col text-xs font-semibold text-white" data-has-tag={!!tag} data-tag={tag}>
@@ -42,20 +42,20 @@ export const Message = ({ message, name, profile, replyTo, tag, onClickReply }: 
         </p>
         <AnimatePresence>
             {
-                isMessageMenuVisible && <MessageMenu onClickReply={onClickReply} replyTo={replyTo}/>
+                isMessageMenuVisible && <MessageMenu onClickReply={onClickReply} user={user}/>
             }
         </AnimatePresence>
     </motion.div>;
 };
 
-type MessageMenuProps = Pick<MessageProps, "onClickReply"|"replyTo">;
+type MessageMenuProps = Pick<MessageProps, "onClickReply"|"user">;
 
-export const MessageMenu = ({ onClickReply, replyTo }: MessageMenuProps) =>
+export const MessageMenu = ({ onClickReply, user }: MessageMenuProps) =>
     <motion.div
         className="flex gap-2 "
         variants={messageMenuVariants}
         initial="initial" animate="show" exit="exit"
     >
-        {replyTo && <Button variant="secondary" size="compact" className="mt-2 px-4" onClick={() => onClickReply(replyTo)}>Reply</Button>}
+        {user && <Button variant="secondary" size="compact" className="mt-2 px-4" onClick={() => onClickReply(user)}>Reply</Button>}
         <Button variant="secondary" size="compact" className="mt-2 px-4">Mute</Button>
     </motion.div>;

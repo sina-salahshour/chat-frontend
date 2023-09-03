@@ -132,11 +132,11 @@ export const ChatSection = () => {
                     {
                         messages.map((message) => <Message
                             key={message.id}
-                            id={message.id}
+                            user={message.user || undefined}
                             message={message.message}
                             name={message.user?.user_name || "Admin"}
                             profile={message.user?.user_avatar}
-                            replyTo={message.reply_to?.user || undefined}
+                            replyTo={message.reply_to?.user }
                             tag={message.user === null ? "mod" : "user"}
                             onClickReply={handleReply}
                         />)
