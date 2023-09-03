@@ -15,8 +15,11 @@ const userSlice = createSlice({
         setUser: (state, action: PayloadAction<MeDto>) => {
             state.user = action.payload;
         },
+        deleteUser: (state) => {
+            state.user = undefined;
+        },
     },
 });
 
-export const { setUser } = userSlice.actions;
+export const { setUser, deleteUser } = userSlice.actions;
 export default userSlice.reducer;
