@@ -2,13 +2,23 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-First, run the development server:
+### With docker:
+```bash
+docker compose up
+# or 
+docker build . -t chat-frontend
+docker run chat-frontend:latest
+```
+
+### Using pnpm
+First, install the dependencies:
+```bash
+pnpm i
+```
+
+Then, run the development server:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
 pnpm dev
 ```
 
