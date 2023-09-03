@@ -25,7 +25,7 @@ export const Modal = ({ show, children, onHide }: ModalProps) =>
             show && <motion.div
                 variants={modalVariants}
                 initial="enter" animate="idle" exit="exit"
-                className="fixed inset-0 flex items-center justify-center"> <div className="absolute inset-0 bg-black bg-opacity-80" onClick={onHide} />
+                className="fixed inset-0 z-10 flex items-center justify-center"> <div className="absolute inset-0 bg-black bg-opacity-80" onClick={onHide} />
                 <div className="relative">{children}</div>
             </motion.div>
         }

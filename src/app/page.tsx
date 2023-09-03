@@ -69,7 +69,7 @@ export const Home = () => {
     }, [ isHydrated, router, handleLogin, dispatch ]);
     const isButtonDisabled = !value || formState === "pending";
     return (
-        <motion.main onAnimationComplete={handleRouteChange} variants={pageTransitions} initial="enter" animate={transitionState} className="flex h-[100dvh] flex-col items-center justify-center">
+        <motion.main onAnimationComplete={handleRouteChange} variants={pageTransitions} initial="enter" animate={transitionState} className="flex min-h-[100dvh] flex-col items-center justify-center">
             <form onSubmit={(e) => void handleSubmit(e)}>
                 <Card className="mx-auto flex min-h-[480px] flex-col gap-6">
                     <h1 className="text-center text-sm font-semibold leading-[18px] text-white">Welcome</h1>

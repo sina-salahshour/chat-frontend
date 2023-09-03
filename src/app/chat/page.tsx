@@ -3,12 +3,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "components/button";
 import { Card } from "components/card";
+import { chatSelectors } from "store/redux/reduders/chat-reducer";
 import { IconButton } from "components/icon-button";
 import { ls } from "services/localstorage.service";
 import { Menu } from "./menu";
+import { Message } from "./message";
 import { OnlineUsers } from "./online-users";
 import { pageTransitions, TokenKey } from "configs/constants";
 import { TextField } from "components/text-field";
+import { useAppSelector } from "store/redux/hooks";
 import { useRouter } from "next/navigation";
 import LogoutIcon from "assets/icons/logout.svg";
 import MenuIcon from "assets/icons/menu.svg";
@@ -16,8 +19,6 @@ import React, { useState } from "react";
 import SendIcon from "assets/icons/send.svg";
 import type { PageTransitionKeys } from "configs/constants";
 import type { Variants } from "framer-motion";
-
-;
 
 const headerButtonVariants = {
     show: { opacity: 1 },
@@ -56,7 +57,7 @@ const ChatPage = () => {
     return <motion.main
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
-        className="flex h-[100dvh] flex-col items-center justify-center">
+        className="flex min-h-[100dvh] flex-col items-center justify-center ">
         <Card className="flex max-h-[800px] flex-col">
             <div className="mb-6 flex w-full flex-shrink-0">
                 <OnlineUsers />
@@ -84,15 +85,30 @@ const ChatPage = () => {
     </motion.main>;
 };
 
-export const ChatSection = () =>
-    <motion.div variants={chatSectionVariants}
-        initial="hide" animate="show" exit="hide"
+export const ChatSection = () => {
+    const messages = useAppSelector(chatSelectors.selectAll);
+    return <motion.div variants={chatSectionVariants}
+        initial="hide" animate="show" exit="hide" className="flex-1"
     >
-        <div className="mt-2 flex gap-[10px]">
+        <div className="h-100 flex flex-1 flex-col gap-4 overflow-auto">
+
+            {
+                messages.map((message) => <Message
+                    key={message.id}
+                    message={message.message}
+                    name={message.user?.user_name || "Admin"}
+                    profile={message.user?.user_avatar}
+                    replyTo={message.reply_to?.user?.user_name}
+                    tag={message.user === null ? "mod" : "user"}
+                />)
+            }
+        </div>
+        <div className="mt-10 flex flex-1 gap-[10px]">
             <TextField className="flex-1" /> <Button size="custom" variant="secondary" className="h-10 w-10">
                 <SendIcon />
             </Button>
         </div>
     </motion.div>;
+};
 
 export default ChatPage;
