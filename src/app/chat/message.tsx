@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import React from "react";
+import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
 export const messageVariants = {
@@ -14,7 +15,9 @@ export interface MessageProps {
     name: string;
     tag?: "mod" | "user";
     message: string;
-    replyTo?: string;
+    replyTo?: UserDto | null;
+    id: number;
+    onClickReply: (user: UserDto) => void;
 }
 
 export const Message = ({ message, name, profile, replyTo, tag }: MessageProps) =>
@@ -27,6 +30,6 @@ export const Message = ({ message, name, profile, replyTo, tag }: MessageProps) 
             <span className="group-data-[has-tag=true]:text-accent-default">{name}</span>
         </h3>
         <p className="mt-1 text-secondary group-data-[tag=mod]:text-result-fail group-data-[tag=user]:text-white">
-            {replyTo && <span className="text-white text-opacity-80 group-data-[has-tag=true]:text-opacity-100">@{replyTo}</span>} {message}
+            {replyTo && <span className="text-white text-opacity-80 group-data-[has-tag=true]:text-opacity-100">@{replyTo.user_name}</span>} {message}
         </p>
     </motion.div>;

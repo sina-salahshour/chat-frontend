@@ -18,9 +18,10 @@ import { useSocketService } from "store/providers/socket-provider";
 import { v4 } from "uuid";
 import LogoutIcon from "assets/icons/logout.svg";
 import MenuIcon from "assets/icons/menu.svg";
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import SendIcon from "assets/icons/send.svg";
 import type { PageTransitionKeys } from "configs/constants";
+import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
 const headerButtonVariants = {
@@ -93,6 +94,28 @@ export const ChatSection = () => {
     const socketService = useSocketService();
     const textFieldRef = useRef<HTMLInputElement>(null);
     const [ messageBox, setMessageBox ] = useState("");
+    const [ replyUser, setReplyUser ] = useState<UserDto | undefined>();
+
+    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        const textId = `@${replyUser?.user_name} `;
+        if (!replyUser) {
+            setMessageBox(value);
+        } else if (value.startsWith(textId)) {
+            setMessageBox(value.substring(textId.length));
+        } else {
+            setMessageBox("");
+            setReplyUser(undefined);
+        }
+    };
+    const textInputValue = useMemo(() => {
+        let value = "";
+        if (replyUser) {
+            value += `@${replyUser.user_name} `;
+        }
+        value += messageBox;
+        return value;
+    }, [ messageBox, replyUser ]);
     return <>
         <motion.div variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
@@ -103,11 +126,13 @@ export const ChatSection = () => {
                     {
                         messages.map((message) => <Message
                             key={message.id}
+                            id={message.id}
                             message={message.message}
                             name={message.user?.user_name || "Admin"}
                             profile={message.user?.user_avatar}
-                            replyTo={message.reply_to?.user?.user_name}
+                            replyTo={message.reply_to?.user}
                             tag={message.user === null ? "mod" : "user"}
+                            onClickReply={setReplyUser}
                         />)
                     }
                 </AnimatePresence>
@@ -117,19 +142,20 @@ export const ChatSection = () => {
             variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide"
             className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
-                const message = textFieldRef.current?.value;
                 e.preventDefault();
-                if (message) {
+                if (messageBox) {
                     socketService?.emit(SocketEmitter.ChatSendMessage, {
                         key: v4(),
-                        message,
+                        message: messageBox,
+                        reply_to: replyUser?.user_id,
                     });
                     setMessageBox("");
+                    setReplyUser(undefined);
                 }
             }}
 
         >
-            <TextField ref={textFieldRef} value={messageBox} onChange={(e) => setMessageBox(e.target.value)} />
+            <TextField ref={textFieldRef} value={textInputValue} onChange={handleFormChange} />
             <Button
                 disabled={!messageBox}
                 size="custom"
