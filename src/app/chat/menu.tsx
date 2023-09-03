@@ -24,26 +24,27 @@ const menuVariants = {
 
 export interface MenuProps {
     show: boolean;
+    onHideChat: () => void;
 }
-export const Menu = ({ show }: MenuProps) =>
+export const Menu = ({ show, onHideChat }: MenuProps) =>
     <AnimatePresence>
         {
             show && (
                 <motion.div className="overflow-hidden" variants={menuVariants} initial="hide" animate="show" exit="hide">
-                    <MenuItems />
+                    <MenuItems onHideChat={onHideChat} />
                 </motion.div>
             )
         }
     </AnimatePresence>;
 
-export const MenuItems = () => {
+export const MenuItems = ({ onHideChat }: Pick<MenuProps, "onHideChat">) => {
     const [ isGroupInfoVisible, setGroupInfoVisible ] = useState(false);
 
-    return <div className="my-6 flex flex-col gap-4 rounded-lg bg-black bg-opacity-50 p-6" >
+    return <div className="mb-6 flex flex-col gap-4 rounded-lg bg-black bg-opacity-50 p-6" >
 
         <IconButton icon={MuteIcon} >Muted Users</IconButton>
         <IconButton icon={InfoIcon} onClick={() => setGroupInfoVisible(true)}>Chat Rules</IconButton>
-        <IconButton icon={HideIcon}>Hide Chat</IconButton>
+        <IconButton icon={HideIcon} onClick={onHideChat}>Hide Chat</IconButton>
         <Modal show={isGroupInfoVisible} onHide={() => setGroupInfoVisible(false)}>
             <Card className="flex h-base-height flex-col gap-6">
                 <div className="relative">
