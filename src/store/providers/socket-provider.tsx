@@ -21,6 +21,9 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
     const isHydrated = useIsHydrated();
     const dispatch = useAppDispatch();
     useEffect(() => {
+        if (typeof window === "undefined") {
+            return;
+        };
         if (isHydrated && !socket) {
             const socketService = new SocketService(io(process.env.NEXT_PUBLIC_APP_API_URL, {
                 path: "/ws",
