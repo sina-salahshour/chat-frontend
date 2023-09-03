@@ -5,7 +5,7 @@ import type { WsChatMessageDto } from "types/dtos/chat/message.dto";
 
 export const chatAdapter = createEntityAdapter<WsChatMessageDto>({
     selectId: (message) => message.id,
-    sortComparer: (a, b) => a.date.localeCompare(b.date),
+    sortComparer: (a, b) => b.date.localeCompare(a.date),
 });
 
 const chatSlice = createSlice({

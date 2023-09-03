@@ -60,9 +60,9 @@ const ChatPage = () => {
     return <motion.main
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
-        className="flex min-h-[100dvh] flex-col items-center justify-center ">
+        className="flex min-h-[100dvh] flex-col items-center justify-center">
         <Card className="flex max-h-[800px] flex-col">
-            <div className="mb-6 flex w-full flex-shrink-0">
+            <div className="mb-6 flex w-full">
                 <OnlineUsers />
                 <AnimatePresence mode="popLayout">
                     <motion.div variants={headerButtonVariants} initial="hide" exit="hide" animate="show" className="ml-auto" key={String(isChatVisible)}>
@@ -93,36 +93,41 @@ export const ChatSection = () => {
     const socketService = useSocketService();
     const textFieldRef = useRef<HTMLInputElement>(null);
     const [ messageBox, setMessageBox ] = useState("");
-    return <motion.div variants={chatSectionVariants}
-        initial="hide" animate="show" exit="hide" className="flex-1"
-    >
-        <div className="h-100 flex flex-1 flex-col gap-4 overflow-auto">
+    return <>
+        <motion.div variants={chatSectionVariants}
+            initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
+        >
+            <div className="flex flex-1 flex-col gap-4">
 
-            {
-                messages.map((message) => <Message
-                    key={message.id}
-                    message={message.message}
-                    name={message.user?.user_name || "Admin"}
-                    profile={message.user?.user_avatar}
-                    replyTo={message.reply_to?.user?.user_name}
-                    tag={message.user === null ? "mod" : "user"}
-                />)
-            }
-        </div>
-        <form className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
-            const message = textFieldRef.current?.value;
-            e.preventDefault();
-            if (message) {
-                socketService?.emit(SocketEmitter.ChatSendMessage, {
-                    key: v4(),
-                    message,
-                });
-                setMessageBox("");
-            }
-        }}
+                {
+                    messages.map((message) => <Message
+                        key={message.id}
+                        message={message.message}
+                        name={message.user?.user_name || "Admin"}
+                        profile={message.user?.user_avatar}
+                        replyTo={message.reply_to?.user?.user_name}
+                        tag={message.user === null ? "mod" : "user"}
+                    />)
+                }
+            </div>
+        </motion.div>
+        <motion.form
+            variants={chatSectionVariants}
+            initial="hide" animate="show" exit="hide"
+            className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
+                const message = textFieldRef.current?.value;
+                e.preventDefault();
+                if (message) {
+                    socketService?.emit(SocketEmitter.ChatSendMessage, {
+                        key: v4(),
+                        message,
+                    });
+                    setMessageBox("");
+                }
+            }}
 
         >
-            <TextField ref={textFieldRef} className="flex-1" value={messageBox} onChange={(e) => setMessageBox(e.target.value)} />
+            <TextField ref={textFieldRef} value={messageBox} onChange={(e) => setMessageBox(e.target.value)} />
             <Button
                 disabled={!messageBox}
                 size="custom"
@@ -131,8 +136,8 @@ export const ChatSection = () => {
             >
                 <SendIcon />
             </Button>
-        </form>
-    </motion.div>;
+        </motion.form>
+    </>;
 };
 
 export default ChatPage;

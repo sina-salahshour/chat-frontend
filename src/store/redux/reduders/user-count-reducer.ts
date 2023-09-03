@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import type { MeDto } from "types/dtos/user/me.dto";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 export interface UserCountState {
