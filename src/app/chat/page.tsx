@@ -10,12 +10,15 @@ import { Menu } from "./menu";
 import { Message } from "./message";
 import { OnlineUsers } from "./online-users";
 import { pageTransitions, TokenKey } from "configs/constants";
+import { SocketEmitter } from "types/dtos/websocket/mapping";
 import { TextField } from "components/text-field";
 import { useAppSelector } from "store/redux/hooks";
 import { useRouter } from "next/navigation";
+import { useSocketService } from "store/providers/socket-provider";
+import { v4 } from "uuid";
 import LogoutIcon from "assets/icons/logout.svg";
 import MenuIcon from "assets/icons/menu.svg";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import SendIcon from "assets/icons/send.svg";
 import type { PageTransitionKeys } from "configs/constants";
 import type { Variants } from "framer-motion";
@@ -87,6 +90,9 @@ const ChatPage = () => {
 
 export const ChatSection = () => {
     const messages = useAppSelector(chatSelectors.selectAll);
+    const socketService = useSocketService();
+    const textFieldRef = useRef<HTMLInputElement>(null);
+    const [ messageBox, setMessageBox ] = useState("");
     return <motion.div variants={chatSectionVariants}
         initial="hide" animate="show" exit="hide" className="flex-1"
     >
@@ -103,11 +109,29 @@ export const ChatSection = () => {
                 />)
             }
         </div>
-        <div className="mt-10 flex flex-1 gap-[10px]">
-            <TextField className="flex-1" /> <Button size="custom" variant="secondary" className="h-10 w-10">
+        <form className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
+            const message = textFieldRef.current?.value;
+            e.preventDefault();
+            if (message) {
+                socketService?.emit(SocketEmitter.ChatSendMessage, {
+                    key: v4(),
+                    message,
+                });
+                setMessageBox("");
+            }
+        }}
+
+        >
+            <TextField ref={textFieldRef} className="flex-1" value={messageBox} onChange={(e) => setMessageBox(e.target.value)} />
+            <Button
+                disabled={!messageBox}
+                size="custom"
+                variant="secondary"
+                className="h-10 w-10"
+            >
                 <SendIcon />
             </Button>
-        </div>
+        </form>
     </motion.div>;
 };
 

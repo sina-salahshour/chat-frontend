@@ -8,18 +8,20 @@ import { SocketService } from "services/socket.service";
 import { toast } from "react-hot-toast";
 import { TokenKey } from "configs/constants";
 import { useAppDispatch } from "store/redux/hooks";
+import { useIsHydrated } from "hooks/use-is-hydrated";
 import { v4 } from "uuid";
 import io from "socket.io-client";
-import React, { createContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import type { PropsWithChildren } from "react";
 
 const SocketContext = createContext<SocketService | undefined>(undefined);
 
 export const SocketProvider = ({ children }: PropsWithChildren) => {
     const [ socket, setSocket ] = useState<SocketService>();
+    const isHydrated = useIsHydrated();
     const dispatch = useAppDispatch();
     useEffect(() => {
-        if (typeof window !== "undefined" && !socket) {
+        if (isHydrated && !socket) {
             const socketService = new SocketService(io(process.env.NEXT_PUBLIC_APP_API_URL, {
                 path: "/ws",
                 transports: [ "websocket" ],
@@ -38,14 +40,16 @@ export const SocketProvider = ({ children }: PropsWithChildren) => {
                 dispatch(setUserCount(result.users));
             });
             socketService.on(SocketListener.Exception, (result) => {
-                toast.error(result.message);
+                toast.error(result.error);
             });
             socketService.emit(SocketEmitter.ChatJoin, {
                 key: v4(),
             });
         }
-    }, [ socket, dispatch ]);
+    }, [ socket, dispatch, isHydrated ]);
     return <SocketContext.Provider value={socket}>
         {children}
     </SocketContext.Provider>;
 };
+
+export const useSocketService = () => useContext(SocketContext);
