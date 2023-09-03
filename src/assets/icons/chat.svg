@@ -1,0 +1,10 @@
+<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Icons / chat" clip-path="url(#clip0_1120_838)">
+<path id="Vector" d="M34 0H6C2.7 0 0 2.7 0 6V38C0 38.8 0.48 39.54 1.24 39.84C1.48 39.94 1.74 40 2 40C2.52 40 3.04 39.8 3.42 39.42L10.82 32H34C37.3 32 40 29.3 40 26V6C40 2.7 37.3 0 34 0ZM36 26C36 27.1 35.1 28 34 28H10C9.46 28 8.96 28.22 8.58 28.58L4 33.18V6C4 4.9 4.9 4 6 4H34C35.1 4 36 4.9 36 6V26Z" fill="#909090"/>
+</g>
+<defs>
+<clipPath id="clip0_1120_838">
+<rect width="40" height="40" fill="white"/>
+</clipPath>
+</defs>
+</svg>
