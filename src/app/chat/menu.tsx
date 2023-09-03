@@ -30,7 +30,7 @@ export const Menu = ({ show, onHideChat }: MenuProps) =>
     <AnimatePresence>
         {
             show && (
-                <motion.div className="overflow-hidden" variants={menuVariants} initial="hide" animate="show" exit="hide">
+                <motion.div className="flex-shrink-0 overflow-hidden" variants={menuVariants} initial="hide" animate="show" exit="hide">
                     <MenuItems onHideChat={onHideChat} />
                 </motion.div>
             )

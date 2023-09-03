@@ -4,7 +4,7 @@ import type { ComponentProps } from "react";
 
 export interface ButtonProps extends ComponentProps<"button"> {
     variant?: "primary" | "secondary";
-    size?: "normal" | "compact";
+    size?: "normal" | "compact" | "custom";
 }
 
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(({ variant = "primary", size = "normal", className, ...props }, ref) =>

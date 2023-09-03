@@ -8,12 +8,16 @@ import { ls } from "services/localstorage.service";
 import { Menu } from "./menu";
 import { OnlineUsers } from "./online-users";
 import { pageTransitions, TokenKey } from "configs/constants";
+import { TextField } from "components/text-field";
 import { useRouter } from "next/navigation";
 import LogoutIcon from "assets/icons/logout.svg";
 import MenuIcon from "assets/icons/menu.svg";
 import React, { useState } from "react";
+import SendIcon from "assets/icons/send.svg";
 import type { PageTransitionKeys } from "configs/constants";
 import type { Variants } from "framer-motion";
+
+;
 
 const headerButtonVariants = {
     show: { opacity: 1 },
@@ -53,8 +57,8 @@ const ChatPage = () => {
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
         className="flex h-[100dvh] flex-col items-center justify-center">
-        <Card>
-            <div className="mb-6 flex w-full">
+        <Card className="flex max-h-[800px] flex-col">
+            <div className="mb-6 flex w-full flex-shrink-0">
                 <OnlineUsers />
                 <AnimatePresence mode="popLayout">
                     <motion.div variants={headerButtonVariants} initial="hide" exit="hide" animate="show" className="ml-auto" key={String(isChatVisible)}>
@@ -84,7 +88,11 @@ export const ChatSection = () =>
     <motion.div variants={chatSectionVariants}
         initial="hide" animate="show" exit="hide"
     >
-            test
+        <div className="mt-2 flex gap-[10px]">
+            <TextField className="flex-1" /> <Button size="custom" variant="secondary" className="h-10 w-10">
+                <SendIcon />
+            </Button>
+        </div>
     </motion.div>;
 
 export default ChatPage;
