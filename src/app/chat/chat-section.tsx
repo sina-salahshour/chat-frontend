@@ -23,6 +23,7 @@ export const ChatSection = () => {
     const messages = useAppSelector(chatSelectors.selectAll);
     const socketService = useSocketService();
     const textFieldRef = useRef<HTMLInputElement>(null);
+    const chatListRef = useRef<HTMLDivElement>(null);
     const [ messageBox, setMessageBox ] = useState("");
     const [ replyUser, setReplyUser ] = useState<UserDto | undefined>();
     const [ chatMenuId, setChatMenuId ] = useState<number>();
@@ -57,8 +58,22 @@ export const ChatSection = () => {
         setChatMenuId(-1);
         textFieldRef.current?.focus();
     };
+    const handleSendMessage = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (messageBox) {
+            socketService?.emit(SocketEmitter.ChatSendMessage, {
+                key: v4(),
+                message: messageBox,
+                reply_to: replyUser?.user_id,
+            });
+            setMessageBox("");
+            setReplyUser(undefined);
+            chatListRef.current?.scrollTo({ top: 0, behavior: "smooth" });
+        }
+    };
     return <>
         <motion.div variants={chatSectionVariants}
+            ref={chatListRef}
             initial="hide" animate="show" exit="hide" className="h-full flex-1 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-accent-default"
         >
             <div className="flex flex-1 flex-col gap-4 overflow-x-hidden scrollbar-none">
@@ -84,18 +99,7 @@ export const ChatSection = () => {
         <motion.form
             variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide"
-            className="mt-10 flex gap-[10px]" onSubmit={(e) => {
-                e.preventDefault();
-                if (messageBox) {
-                    socketService?.emit(SocketEmitter.ChatSendMessage, {
-                        key: v4(),
-                        message: messageBox,
-                        reply_to: replyUser?.user_id,
-                    });
-                    setMessageBox("");
-                    setReplyUser(undefined);
-                }
-            }}
+            className="mt-10 flex gap-[10px]" onSubmit={handleSendMessage}
 
         >
             <TextField ref={textFieldRef} className="flex-1" value={textInputValue} onChange={handleFormChange} />
