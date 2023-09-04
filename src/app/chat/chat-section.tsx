@@ -18,14 +18,14 @@ const chatSectionVariants = {
     show: { height: "auto", opacity: 1 },
     hide: { height: 0, opacity: 0 },
 } satisfies Variants;
-
+export interface MessageReplyPayload {user?: UserDto; id?: number}
 export const ChatSection = () => {
     const messages = useAppSelector(chatSelectors.selectAll);
     const socketService = useSocketService();
     const textFieldRef = useRef<HTMLInputElement>(null);
     const chatListRef = useRef<HTMLDivElement>(null);
     const [ messageBox, setMessageBox ] = useState("");
-    const [ replyUser, setReplyUser ] = useState<UserDto | undefined>();
+    const [ replyUser, setReplyUser ] = useState<MessageReplyPayload | undefined>();
     const [ chatMenuId, setChatMenuId ] = useState<number>();
 
     const handleOpenChatMenu = (messageId: number) => {
@@ -34,7 +34,7 @@ export const ChatSection = () => {
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
-        const textId = `@${replyUser?.user_name} `;
+        const textId = `@${replyUser?.user?.user_name} `;
         if (!replyUser) {
             setMessageBox(value);
         } else if (value.startsWith(textId)) {
@@ -47,14 +47,14 @@ export const ChatSection = () => {
     const textInputValue = useMemo(() => {
         let value = "";
         if (replyUser) {
-            value += `@${replyUser.user_name} `;
+            value += `@${replyUser?.user?.user_name} `;
         }
         value += messageBox;
         return value;
     }, [ messageBox, replyUser ]);
 
-    const handleReply = (user?: UserDto) => {
-        setReplyUser(user);
+    const handleReply = (payload: MessageReplyPayload) => {
+        setReplyUser(payload);
         setChatMenuId(-1);
         textFieldRef.current?.focus();
     };
@@ -64,7 +64,7 @@ export const ChatSection = () => {
             socketService?.emit(SocketEmitter.ChatSendMessage, {
                 key: v4(),
                 message: messageBox,
-                reply_to: replyUser?.user_id,
+                reply_to: replyUser?.id,
             });
             setMessageBox("");
             setReplyUser(undefined);
@@ -81,6 +81,7 @@ export const ChatSection = () => {
 
                     {
                         messages.map((message) => <Message
+                            id={message.id}
                             key={message.id}
                             user={message.user || undefined}
                             message={message.message}
