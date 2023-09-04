@@ -96,6 +96,11 @@ export const ChatSection = () => {
     const textFieldRef = useRef<HTMLInputElement>(null);
     const [ messageBox, setMessageBox ] = useState("");
     const [ replyUser, setReplyUser ] = useState<UserDto | undefined>();
+    const [ chatMenuId, setChatMenuId ] = useState<number>();
+
+    const handleOpenChatMenu = (messageId: number) => {
+        setChatMenuId((prev) => prev === messageId ? -1 : messageId);
+    };
 
     const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
@@ -120,6 +125,7 @@ export const ChatSection = () => {
 
     const handleReply = (user?: UserDto) => {
         setReplyUser(user);
+        setChatMenuId(-1);
         textFieldRef.current?.focus();
     };
     return <>
@@ -139,6 +145,8 @@ export const ChatSection = () => {
                             replyTo={message.reply_to?.user }
                             tag={message.user === null ? "mod" : "user"}
                             onClickReply={handleReply}
+                            isMessageMenuVisible={chatMenuId === message.id}
+                            toggleMessageMenuVisibility={() => handleOpenChatMenu(message.id)}
                         />)
                     }
                 </AnimatePresence>
