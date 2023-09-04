@@ -124,9 +124,9 @@ export const ChatSection = () => {
     };
     return <>
         <motion.div variants={chatSectionVariants}
-            initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
+            initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-accent-default"
         >
-            <div className="flex flex-1 flex-col gap-4 overflow-x-hidden">
+            <div className="flex flex-1 flex-col gap-4 overflow-x-hidden scrollbar-none">
                 <AnimatePresence>
 
                     {
