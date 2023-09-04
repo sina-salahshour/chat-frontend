@@ -77,7 +77,7 @@ export const Home = () => {
                         <UserIcon className="h-10 w-10" />
                     </div>
                     <h2 className="text-xs font-semibold text-secondary">Choose a username to enter chat.</h2>
-                    <TextField value={value} onChange={(e) => setValue(e.target.value)} title="Username" placeholder="Default" />
+                    <TextField value={value} onChange={(e) => setValue(e.target.value)} title="Username" placeholder="Enter your username" />
                     <Button className="mt-auto" disabled={isButtonDisabled}>Sign In</Button>
                 </Card>
             </form>
