@@ -63,7 +63,7 @@ const ChatPage = () => {
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
         className="flex min-h-[100dvh] flex-col items-center justify-center">
-        <Card className="flex max-h-[800px] flex-col">
+        <Card animate collapse={!isChatVisible} className="flex max-h-[min(100dvh,800px)] flex-col">
             <div className="mb-6 flex w-full">
                 <OnlineUsers />
                 <AnimatePresence mode="popLayout">
@@ -81,7 +81,7 @@ const ChatPage = () => {
                 {
                     isChatVisible ?
                         <ChatSection key="chat" /> :
-                        <motion.div variants={chatButtonVariants} initial="hide" animate="show" exit="hide" key="show-chat">
+                        <motion.div variants={chatButtonVariants} initial="hide" animate="show" exit="hide" key="show-chat" className="mt-auto">
                             <Button className="w-full" onClick={showChat}>Show Chat</Button>
                         </motion.div>
                 }
@@ -124,7 +124,7 @@ export const ChatSection = () => {
     };
     return <>
         <motion.div variants={chatSectionVariants}
-            initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-accent-default"
+            initial="hide" animate="show" exit="hide" className="h-full flex-1 overflow-y-auto scrollbar-thin scrollbar-track-background scrollbar-thumb-accent-default"
         >
             <div className="flex flex-1 flex-col gap-4 overflow-x-hidden scrollbar-none">
                 <AnimatePresence>
@@ -147,7 +147,7 @@ export const ChatSection = () => {
         <motion.form
             variants={chatSectionVariants}
             initial="hide" animate="show" exit="hide"
-            className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
+            className="mt-10 flex gap-[10px]" onSubmit={(e) => {
                 e.preventDefault();
                 if (messageBox) {
                     socketService?.emit(SocketEmitter.ChatSendMessage, {
@@ -161,7 +161,7 @@ export const ChatSection = () => {
             }}
 
         >
-            <TextField ref={textFieldRef} value={textInputValue} onChange={handleFormChange} />
+            <TextField ref={textFieldRef} className="flex-1" value={textInputValue} onChange={handleFormChange} />
             <Button
                 disabled={!messageBox}
                 size="custom"

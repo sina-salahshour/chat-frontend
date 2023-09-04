@@ -34,7 +34,8 @@ const config: Config = {
       },
       spacing: {
         "base-width": "320px",
-        "base-height": "480px"
+        "base-height": "480px",
+        "chat-height": "620px",
       }
     },
   },

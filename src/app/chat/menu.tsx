@@ -46,7 +46,7 @@ export const MenuItems = ({ onHideChat }: Pick<MenuProps, "onHideChat">) => {
         <IconButton icon={InfoIcon} onClick={() => setGroupInfoVisible(true)}>Chat Rules</IconButton>
         <IconButton icon={HideIcon} onClick={onHideChat}>Hide Chat</IconButton>
         <Modal show={isGroupInfoVisible} onHide={() => setGroupInfoVisible(false)}>
-            <Card className="flex h-base-height flex-col gap-6">
+            <Card className="flex h-base-height max-h-[100dvh] flex-col gap-6">
                 <div className="relative">
                     <h1 className="text-center text-sm font-semibold leading-[18px] text-white">Chat Rules</h1>
                     <IconButton
@@ -66,7 +66,7 @@ export const MenuItems = ({ onHideChat }: Pick<MenuProps, "onHideChat">) => {
                 <Button
                     variant="secondary"
                     onClick={() => setGroupInfoVisible(false)}
-                    className="mt-auto">Alright</Button>
+                    className="mt-auto flex-shrink-0">Alright</Button>
             </Card>
         </Modal>
     </div>;
