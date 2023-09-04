@@ -64,7 +64,7 @@ const ChatPage = () => {
                     </motion.div>
                 </AnimatePresence>
             </div>
-            <Menu show={isMenuVisible} onHideChat={hideChat} />
+            <Menu show={isMenuVisible} onHideChat={hideChat} onLogout={handleLogout} />
             <AnimatePresence mode="wait" >
                 {
                     isChatVisible ?

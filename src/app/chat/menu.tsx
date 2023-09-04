@@ -7,6 +7,7 @@ import ChatIcon from "assets/icons/chat.svg";
 import CloseIcon from "assets/icons/close.svg";
 import HideIcon from "assets/icons/hide.svg";
 import InfoIcon from "assets/icons/info.svg";
+import LogoutIcon from "assets/icons/logout.svg";
 import MuteIcon from "assets/icons/mute.svg";
 import React, { useState } from "react";
 import type { Variants } from "framer-motion";
@@ -25,19 +26,20 @@ const menuVariants = {
 export interface MenuProps {
     show: boolean;
     onHideChat: () => void;
+    onLogout: () => void;
 }
-export const Menu = ({ show, onHideChat }: MenuProps) =>
+export const Menu = ({ show, onHideChat, onLogout }: MenuProps) =>
     <AnimatePresence>
         {
             show && (
                 <motion.div className="flex-shrink-0 overflow-hidden" variants={menuVariants} initial="hide" animate="show" exit="hide">
-                    <MenuItems onHideChat={onHideChat} />
+                    <MenuItems onHideChat={onHideChat} onLogout={onLogout} />
                 </motion.div>
             )
         }
     </AnimatePresence>;
 
-export const MenuItems = ({ onHideChat }: Pick<MenuProps, "onHideChat">) => {
+export const MenuItems = ({ onHideChat, onLogout }: Pick<MenuProps, "onHideChat" | "onLogout">) => {
     const [ isGroupInfoVisible, setGroupInfoVisible ] = useState(false);
 
     return <div className="mb-6 flex flex-col gap-4 rounded-lg bg-black bg-opacity-50 p-6" >
@@ -45,6 +47,7 @@ export const MenuItems = ({ onHideChat }: Pick<MenuProps, "onHideChat">) => {
         <IconButton icon={MuteIcon} >Muted Users</IconButton>
         <IconButton icon={InfoIcon} onClick={() => setGroupInfoVisible(true)}>Chat Rules</IconButton>
         <IconButton icon={HideIcon} onClick={onHideChat}>Hide Chat</IconButton>
+        <IconButton icon={LogoutIcon} onClick={onLogout}>Logout</IconButton>
         <Modal show={isGroupInfoVisible} onHide={() => setGroupInfoVisible(false)}>
             <Card className="flex h-base-height max-h-[100dvh] flex-col gap-6">
                 <div className="relative">
