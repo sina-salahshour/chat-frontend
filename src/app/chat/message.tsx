@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "components/button";
 import Image from "next/image";
-import React, { useReducer } from "react";
+import React from "react";
 import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
