@@ -51,7 +51,7 @@ const ChatPage = () => {
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
         className="flex min-h-[100dvh] flex-col items-center justify-center">
-        <Card animate collapse={!isChatVisible} className="flex max-h-[min(100dvh,800px)] flex-col">
+        <Card animate collapse={!isChatVisible} className="flex max-h-[min(100dvh,800px)] flex-col overflow-y-auto scrollbar-none">
             <div className="mb-6 flex w-full">
                 <OnlineUsers />
                 <AnimatePresence mode="popLayout">
