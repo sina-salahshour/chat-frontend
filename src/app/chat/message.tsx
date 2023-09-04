@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "components/button";
 import Image from "next/image";
-import React, { useReducer } from "react";
+import React from "react";
 import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
@@ -24,12 +24,12 @@ export interface MessageProps {
     replyTo?: UserDto | null;
     user?: UserDto;
     onClickReply: (user?: UserDto) => void;
+    isMessageMenuVisible: boolean;
+    toggleMessageMenuVisibility: () => void;
 }
 
-export const Message = ({ message, name, profile, replyTo, tag, onClickReply, user }: MessageProps) => {
-    const [ isMessageMenuVisible, toggleMessageMenuVisibility ] = useReducer((prev) => !prev, false);
-
-    return <motion.div variants={messageVariants} initial="initial" animate="show" exit="exit" className="group flex flex-col text-xs font-semibold text-white" data-has-tag={!!tag} data-tag={tag}>
+export const Message = ({ message, name, profile, replyTo, tag, onClickReply, user, isMessageMenuVisible, toggleMessageMenuVisibility }: MessageProps) =>
+    <motion.div variants={messageVariants} initial="initial" animate="show" exit="exit" className="group flex flex-col text-xs font-semibold text-white" data-has-tag={!!tag} data-tag={tag}>
         <button className="flex items-center gap-2" onClick={toggleMessageMenuVisibility}>
             {profile && <figure className="relative h-6 w-6 overflow-hidden rounded">
                 <Image fill src={profile} alt={name} />
@@ -46,7 +46,6 @@ export const Message = ({ message, name, profile, replyTo, tag, onClickReply, us
             }
         </AnimatePresence>
     </motion.div>;
-};
 
 type MessageMenuProps = Pick<MessageProps, "onClickReply"|"user">;
 

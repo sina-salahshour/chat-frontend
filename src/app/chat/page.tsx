@@ -3,25 +3,17 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "components/button";
 import { Card } from "components/card";
-import { chatSelectors } from "store/redux/reduders/chat-reducer";
+import { ChatSection } from "./chat-section";
 import { IconButton } from "components/icon-button";
 import { ls } from "services/localstorage.service";
 import { Menu } from "./menu";
-import { Message } from "./message";
 import { OnlineUsers } from "./online-users";
 import { pageTransitions, TokenKey } from "configs/constants";
-import { SocketEmitter } from "types/dtos/websocket/mapping";
-import { TextField } from "components/text-field";
-import { useAppSelector } from "store/redux/hooks";
 import { useRouter } from "next/navigation";
-import { useSocketService } from "store/providers/socket-provider";
-import { v4 } from "uuid";
 import LogoutIcon from "assets/icons/logout.svg";
 import MenuIcon from "assets/icons/menu.svg";
-import React, { useMemo, useRef, useState } from "react";
-import SendIcon from "assets/icons/send.svg";
+import React, { useState } from "react";
 import type { PageTransitionKeys } from "configs/constants";
-import type { UserDto } from "types/dtos/user/user.dto";
 import type { Variants } from "framer-motion";
 
 const headerButtonVariants = {
@@ -29,10 +21,6 @@ const headerButtonVariants = {
     hide: { opacity: 0 },
 } satisfies Variants;
 
-const chatSectionVariants = {
-    show: { height: "auto", opacity: 1 },
-    hide: { height: 0, opacity: 0 },
-} satisfies Variants;
 const chatButtonVariants = {
     show: { opacity: 1, height: "auto" },
     hide: { opacity: 0, height: 0 },
@@ -63,7 +51,7 @@ const ChatPage = () => {
         onAnimationComplete={handleRouteChange}
         variants={pageTransitions} initial="enter" animate={pageTransitionState}
         className="flex min-h-[100dvh] flex-col items-center justify-center">
-        <Card className="flex max-h-[800px] flex-col">
+        <Card animate collapse={!isChatVisible} className="flex max-h-[min(100dvh,800px)] flex-col overflow-y-auto scrollbar-none">
             <div className="mb-6 flex w-full">
                 <OnlineUsers />
                 <AnimatePresence mode="popLayout">
@@ -81,97 +69,13 @@ const ChatPage = () => {
                 {
                     isChatVisible ?
                         <ChatSection key="chat" /> :
-                        <motion.div variants={chatButtonVariants} initial="hide" animate="show" exit="hide" key="show-chat">
+                        <motion.div variants={chatButtonVariants} initial="hide" animate="show" exit="hide" key="show-chat" className="mt-auto">
                             <Button className="w-full" onClick={showChat}>Show Chat</Button>
                         </motion.div>
                 }
             </AnimatePresence>
         </Card>
     </motion.main>;
-};
-
-export const ChatSection = () => {
-    const messages = useAppSelector(chatSelectors.selectAll);
-    const socketService = useSocketService();
-    const textFieldRef = useRef<HTMLInputElement>(null);
-    const [ messageBox, setMessageBox ] = useState("");
-    const [ replyUser, setReplyUser ] = useState<UserDto | undefined>();
-
-    const handleFormChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const value = e.target.value;
-        const textId = `@${replyUser?.user_name} `;
-        if (!replyUser) {
-            setMessageBox(value);
-        } else if (value.startsWith(textId)) {
-            setMessageBox(value.substring(textId.length));
-        } else {
-            setMessageBox("");
-            setReplyUser(undefined);
-        }
-    };
-    const textInputValue = useMemo(() => {
-        let value = "";
-        if (replyUser) {
-            value += `@${replyUser.user_name} `;
-        }
-        value += messageBox;
-        return value;
-    }, [ messageBox, replyUser ]);
-
-    const handleReply = (user?: UserDto) => {
-        setReplyUser(user);
-        textFieldRef.current?.focus();
-    };
-    return <>
-        <motion.div variants={chatSectionVariants}
-            initial="hide" animate="show" exit="hide" className="h-full overflow-y-auto"
-        >
-            <div className="flex flex-1 flex-col gap-4 overflow-x-hidden">
-                <AnimatePresence>
-
-                    {
-                        messages.map((message) => <Message
-                            key={message.id}
-                            user={message.user || undefined}
-                            message={message.message}
-                            name={message.user?.user_name || "Admin"}
-                            profile={message.user?.user_avatar}
-                            replyTo={message.reply_to?.user }
-                            tag={message.user === null ? "mod" : "user"}
-                            onClickReply={handleReply}
-                        />)
-                    }
-                </AnimatePresence>
-            </div>
-        </motion.div>
-        <motion.form
-            variants={chatSectionVariants}
-            initial="hide" animate="show" exit="hide"
-            className="mt-10 flex flex-1 gap-[10px]" onSubmit={(e) => {
-                e.preventDefault();
-                if (messageBox) {
-                    socketService?.emit(SocketEmitter.ChatSendMessage, {
-                        key: v4(),
-                        message: messageBox,
-                        reply_to: replyUser?.user_id,
-                    });
-                    setMessageBox("");
-                    setReplyUser(undefined);
-                }
-            }}
-
-        >
-            <TextField ref={textFieldRef} value={textInputValue} onChange={handleFormChange} />
-            <Button
-                disabled={!messageBox}
-                size="custom"
-                variant="secondary"
-                className="h-10 w-10"
-            >
-                <SendIcon />
-            </Button>
-        </motion.form>
-    </>;
 };
 
 export default ChatPage;
